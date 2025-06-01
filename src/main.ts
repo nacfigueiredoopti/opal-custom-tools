@@ -14,6 +14,7 @@ const toolsService = new ToolsService(app);
 import "./tools/greeting";
 import "./tools/todays-date";
 import "./tools/api-call";
+import "./tools/sqlite-query";
 
 // Start the server
 const PORT = process.env.PORT || 3000;
