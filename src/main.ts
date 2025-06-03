@@ -1,11 +1,18 @@
 import cors from "cors";
 import express from "express";
+import basicAuth from "express-basic-auth";
 import { ToolsService, tool } from "@optimizely-opal/opal-tools-sdk";
 
 // Create Express app
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+// Add basic authentication
+app.use(basicAuth({
+  users: { 'admin': 'password' },
+  challenge: true
+}));
 
 // Create Tools Service
 const toolsService = new ToolsService(app);
