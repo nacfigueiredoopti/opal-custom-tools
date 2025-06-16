@@ -12,12 +12,8 @@ async function showGif(
 ) {
   const { gifPath = "/public/rick.gif", altText = "Rick Astley" } = parameters;
 
-  let baseUrl = "http://localhost:3000"; // fallback
-  if (context && context.request) {
-    const protocol = context.request.protocol;
-    const host = context.request.get('host');
-    baseUrl = `${protocol}://${host}`;
-  }
+  // Use BASE_URL from environment variable, fallback to localhost
+  const baseUrl = process.env.BASE_URL || "http://localhost:3000";
 
   const fullGifUrl = `${baseUrl}${gifPath}`;
   const markdown = `![${altText}](${fullGifUrl})`;
