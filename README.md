@@ -83,3 +83,8 @@ src/
 - **Package Manager**: Yarn 4.3.1
 - **SDK**: @optimizely-opal/opal-tools-sdk
 - **Development**: tsc-watch for hot reload
+
+# GIPHY Reference
+```sh
+https://giphy.com/gifs/rick-astley-Ju7l5y9osyymQ
+```
