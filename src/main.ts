@@ -7,13 +7,18 @@ import basicAuth from "express-basic-auth";
 const app = express();
 app.use(express.json());
 app.use(cors());
-app.use(express.static('public'));
+app.use('/public', express.static('public'));
 
-// Add basic authentication
-app.use(basicAuth({
-  users: { 'admin': 'password' },
-  challenge: true
-}));
+// Custom middleware to apply basic auth only to non-public assets
+app.use((req, res, next) => {
+  if (req.path.startsWith('/public/') || req.path === '/rick.gif') {
+    return next(); // Skip auth for public assets
+  }
+  return basicAuth({
+    users: { 'admin': 'password' },
+    challenge: true,
+  })(req, res, next);
+});
 
 // Create Tools Service
 const toolsService = new ToolsService(app);
