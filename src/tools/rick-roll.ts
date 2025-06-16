@@ -7,7 +7,7 @@ interface ShowGifParameters {
 }
 
 async function showGif(parameters: ShowGifParameters, context: { request: Request }) {
-  const { gifPath = "/rick.gif", altText = "Rick Astley" } = parameters;
+  const { gifPath = "/public/rick.gif", altText = "Rick Astley" } = parameters;
   
   const protocol = context.request.protocol;
   const host = context.request.get('host');
