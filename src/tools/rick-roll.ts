@@ -10,13 +10,9 @@ async function showGif(
   parameters: ShowGifParameters,
   context?: { request?: Request }
 ) {
-  const { gifPath = "/public/rick.gif", altText = "Rick Astley" } = parameters;
-
-  // Use BASE_URL from environment variable, fallback to localhost
-  const baseUrl = process.env.BASE_URL || "http://localhost:3000";
-
-  const fullGifUrl = `${baseUrl}${gifPath}`;
-  const markdown = `![${altText}](${fullGifUrl})`;
+  
+  const fullGifUrl = `https://images2.cmp.optimizely.com/Zz02MTFkOTdiODRiNDQxMWYwYTc3OTUyZGFlYjI0NjA5OQ==`;
+  const markdown = `![Rick Astley](${fullGifUrl})`;
 
   return markdown;
 }
