@@ -71,3 +71,23 @@ You can add a custom domain in the Vercel dashboard under your project settings.
 - Cold starts may affect initial response times
 - SQLite database will be read-only in serverless environment
 - Static files from `public/` are served via Vercel's CDN
+
+## Troubleshooting
+
+### "No Output Directory named 'public' found" Error
+
+This error occurs when Vercel expects a static site build output. The `vercel.json` file is configured to specify the correct output directory (`build`) and build command (`yarn build`). If you still encounter this error:
+
+1. Check that your `vercel.json` includes:
+   ```json
+   {
+     "buildCommand": "yarn build",
+     "outputDirectory": "build"
+   }
+   ```
+
+2. Ensure the build completes successfully by running `yarn build` locally first
+
+3. In Vercel dashboard, go to Project Settings → Build & Development Settings and verify:
+   - Build Command: `yarn build`
+   - Output Directory: `build`
