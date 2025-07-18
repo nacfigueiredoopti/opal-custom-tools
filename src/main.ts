@@ -30,9 +30,14 @@ import "./tools/rick-roll";
 import "./tools/sqlite-query";
 import "./tools/todays-date";
 
-// Start the server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Discovery endpoint: http://localhost:${PORT}/discovery`);
-});
+// Export the Express app for serverless environments
+export { app };
+
+// Start the server only when running locally (not in serverless environments)
+if (process.env.NODE_ENV !== 'production' || process.env.NETLIFY !== 'true') {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Discovery endpoint: http://localhost:${PORT}/discovery`);
+  });
+}

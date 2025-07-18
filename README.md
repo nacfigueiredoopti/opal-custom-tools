@@ -5,7 +5,7 @@ A custom tools service for Optimizely Opal that exposes tools via HTTP endpoints
 ## Getting Started
 
 ### Prerequisites
-- Node.js
+- Node.js 18+
 - Yarn 4.3.1
 
 ### Installation
@@ -53,18 +53,42 @@ HTTP client wrapper supporting various HTTP methods with custom headers.
 - `headers` (optional): Custom headers as JSON string
 - `body` (optional): Request body (for POST, PUT, PATCH methods)
 
+### rick-roll
+Returns a Rick Roll GIF URL for fun interactions.
+
+**Parameters:**
+- No parameters required
+
+### sqlite-query
+Executes SQL queries against a SQLite database.
+
+**Parameters:**
+- `query` (required): SQL query to execute
+- `params` (optional): Query parameters for prepared statements
+
 ## Architecture
 
 This service uses Express.js with CORS enabled to serve tools. Each tool is implemented as a separate module in the `src/tools/` directory and registered using the `@tool` decorator pattern from the Opal tools SDK.
 
+The application is designed to work in both traditional server environments and serverless platforms (Vercel, Netlify) with automatic environment detection.
+
 ### Project Structure
 ```
 src/
-  main.ts          # Main application entry point
+  main.ts          # Main application entry point (exports app for serverless)
   tools/           # Individual tool implementations
     greeting.ts
     todays-date.ts
     api-call.ts
+    rick-roll.ts
+    sqlite-query.ts
+vercel/
+  index.ts         # Vercel serverless function entry point
+netlify/
+  functions/
+    api.ts         # Netlify Functions entry point
+build/             # Compiled JavaScript output
+docs/              # Deployment documentation
 ```
 
 ### Adding New Tools
@@ -83,6 +107,21 @@ src/
 - **Package Manager**: Yarn 4.3.1
 - **SDK**: @optimizely-opal/opal-tools-sdk
 - **Development**: tsc-watch for hot reload
+- **Serverless**: serverless-http wrapper for Netlify Functions
+- **Database**: SQLite3 for local data storage
+
+## Deployment
+
+Ready to deploy your custom tools service? Choose your preferred platform:
+
+### Quick Deploy
+
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/kunalshetye/opal-custom-tools)
+
+### Deployment Guides
+
+- [Deploy to Vercel](docs/vercel-deployment.md) - ⚠️ Currently not working due to Express middleware compatibility issues
+- [Deploy to Netlify](docs/netlify-deployment.md) - ✅ Working - JAMstack deployment with edge functions
 
 # GIPHY Reference
 ```sh
