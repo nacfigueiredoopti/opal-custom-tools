@@ -6,7 +6,7 @@ This guide walks you through deploying your Opal custom tools service to Vercel 
 
 Deploy this project to Vercel with a single click:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyour-username%2Fopal-custom-tools&project-name=opal-custom-tools&repository-name=opal-custom-tools)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fkunalshetye%2Fopal-custom-tools&project-name=opal-custom-tools&repository-name=opal-custom-tools)
 
 ## Prerequisites
 
