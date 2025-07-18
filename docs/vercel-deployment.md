@@ -1,12 +1,14 @@
 # Deploying to Vercel
 
-This guide walks you through deploying your Opal custom tools service to Vercel using the included configuration.
+⚠️ **Current Status: Not Working**
 
-## One-Click Deploy
+This deployment is currently experiencing compatibility issues with Vercel's serverless function architecture and Express middleware, specifically with the basic authentication implementation.
 
-Deploy this project to Vercel with a single click:
+## Known Issues
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fkunalshetye%2Fopal-custom-tools&project-name=opal-custom-tools&repository-name=opal-custom-tools)
+- **Express Middleware Compatibility**: The basic authentication middleware doesn't work properly with Vercel's serverless function runtime
+- **Architecture Mismatch**: Vercel expects a more native serverless approach, while our Express app uses traditional middleware patterns
+- **Build/Runtime Differences**: Unlike Netlify's `serverless-http` wrapper that preserves the full Express middleware stack, Vercel's direct app export may bypass middleware
 
 ## Prerequisites
 
@@ -72,22 +74,36 @@ You can add a custom domain in the Vercel dashboard under your project settings.
 - SQLite database will be read-only in serverless environment
 - Static files from `public/` are served via Vercel's CDN
 
-## Troubleshooting
+## Potential Solutions (For Future Development)
+
+### Option 1: Use serverless-http wrapper
+```typescript
+// vercel/index.ts
+import serverless from 'serverless-http';
+import { app } from '../build/main.js';
+
+export default serverless(app);
+```
+
+### Option 2: Remove/Modify Basic Authentication
+```typescript
+// Disable auth for Vercel environment
+const isVercel = process.env.VERCEL === '1';
+if (!isVercel) {
+  // Apply basic auth middleware
+}
+```
+
+### Option 3: Use Vercel's Built-in Authentication
+- Use Vercel's password protection feature in project settings
+- Implement custom authentication that's Vercel-compatible
+
+## Alternative: Use Netlify Instead
+
+For immediate deployment, we recommend using [Netlify deployment](netlify-deployment.md) which works correctly with the current architecture.
+
+## Troubleshooting (Historical)
 
 ### "No Output Directory named 'public' found" Error
 
-This error occurs when Vercel expects a static site build output. The `vercel.json` file is configured to specify the correct output directory (`build`) and build command (`yarn build`). If you still encounter this error:
-
-1. Check that your `vercel.json` includes:
-   ```json
-   {
-     "buildCommand": "yarn build",
-     "outputDirectory": "build"
-   }
-   ```
-
-2. Ensure the build completes successfully by running `yarn build` locally first
-
-3. In Vercel dashboard, go to Project Settings → Build & Development Settings and verify:
-   - Build Command: `yarn build`
-   - Output Directory: `build`
+This error was resolved by configuring `vercel.json` with proper build settings, but the fundamental middleware compatibility issue remains.

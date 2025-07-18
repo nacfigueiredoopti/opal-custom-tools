@@ -116,14 +116,12 @@ Ready to deploy your custom tools service? Choose your preferred platform:
 
 ### Quick Deploy
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fkunalshetye%2Fopal-custom-tools&project-name=opal-custom-tools&repository-name=opal-custom-tools)
-
 [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/kunalshetye/opal-custom-tools)
 
 ### Deployment Guides
 
-- [Deploy to Vercel](docs/vercel-deployment.md) - Serverless deployment with automatic scaling
-- [Deploy to Netlify](docs/netlify-deployment.md) - JAMstack deployment with edge functions
+- [Deploy to Vercel](docs/vercel-deployment.md) - ⚠️ Currently not working due to Express middleware compatibility issues
+- [Deploy to Netlify](docs/netlify-deployment.md) - ✅ Working - JAMstack deployment with edge functions
 
 # GIPHY Reference
 ```sh
