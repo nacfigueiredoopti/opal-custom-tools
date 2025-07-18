@@ -68,6 +68,32 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@netlify/functions@npm:^2.4.1":
+  version: 2.8.2
+  resolution: "@netlify/functions@npm:2.8.2"
+  dependencies:
+    "@netlify/serverless-functions-api": "npm:1.26.1"
+  checksum: 10c0/f543259e68a04f73ff967924c2894d4099f083e83494a60e46478dd874d2d9b8d671751766899b6d99a09f9ea30309dd6b0ef025d6bc49604fb42e57e10e55ba
+  languageName: node
+  linkType: hard
+
+"@netlify/node-cookies@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@netlify/node-cookies@npm:0.1.0"
+  checksum: 10c0/5d8034d1fd581930e8100af4e5710b79cb3bb0a0b743c716d0d8a1c347aad767fa75130323f1aaee78080a026a4cafd4eef7d11953de01098a661d765a497b16
+  languageName: node
+  linkType: hard
+
+"@netlify/serverless-functions-api@npm:1.26.1":
+  version: 1.26.1
+  resolution: "@netlify/serverless-functions-api@npm:1.26.1"
+  dependencies:
+    "@netlify/node-cookies": "npm:^0.1.0"
+    urlpattern-polyfill: "npm:8.0.2"
+  checksum: 10c0/eb5bd829d4c557a66c5a39dde72faf96afa16eaa905d93066ef65248a9449721dbf038e9b83aeed329662bbdc6061e7b8e9e4cd3166da8d4fa774029bda804ef
+  languageName: node
+  linkType: hard
+
 "@npmcli/agent@npm:^3.0.0":
   version: 3.0.0
   resolution: "@npmcli/agent@npm:3.0.0"
@@ -1980,6 +2006,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "opal-custom-tools@workspace:."
   dependencies:
+    "@netlify/functions": "npm:^2.4.1"
     "@optimizely-opal/opal-tools-sdk": "npm:^0.1.0-dev"
     "@types/cors": "npm:^2.8.18"
     "@types/express": "npm:^4.17.17"
@@ -1988,6 +2015,7 @@ __metadata:
     cors: "npm:^2.8.5"
     express: "npm:^4.18.2"
     express-basic-auth: "npm:^1.2.1"
+    serverless-http: "npm:^3.2.0"
     sqlite3: "npm:^5.1.7"
     ts-node: "npm:^10.9.1"
     tsc-watch: "npm:^7.1.1"
@@ -2294,6 +2322,13 @@ __metadata:
     parseurl: "npm:~1.3.3"
     send: "npm:0.19.0"
   checksum: 10c0/528fff6f5e12d0c5a391229ad893910709bc51b5705962b09404a1d813857578149b8815f35d3ee5752f44cd378d0f31669d4b1d7e2d11f41e08283d5134bd1f
+  languageName: node
+  linkType: hard
+
+"serverless-http@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "serverless-http@npm:3.2.0"
+  checksum: 10c0/05f383dbb9ef9e861c0837a7c891fed935dc2af140d1f43deab1921e5fac3a55224ef53dfb026d3d81f29320568e6fc00112c9f31446f961aea3502aa48e2469
   languageName: node
   linkType: hard
 
@@ -2804,6 +2839,13 @@ __metadata:
   version: 1.0.0
   resolution: "unpipe@npm:1.0.0"
   checksum: 10c0/193400255bd48968e5c5383730344fbb4fa114cdedfab26e329e50dd2d81b134244bb8a72c6ac1b10ab0281a58b363d06405632c9d49ca9dfd5e90cbd7d0f32c
+  languageName: node
+  linkType: hard
+
+"urlpattern-polyfill@npm:8.0.2":
+  version: 8.0.2
+  resolution: "urlpattern-polyfill@npm:8.0.2"
+  checksum: 10c0/5388bbe8459dbd8861ee7cb97904be915dd863a9789c2191c528056f16adad7836ec22762ed002fed44e8995d0f98bdfb75a606466b77233e70d0f61b969aaf9
   languageName: node
   linkType: hard
 
