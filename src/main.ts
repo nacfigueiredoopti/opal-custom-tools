@@ -25,6 +25,7 @@ const toolsService = new ToolsService(app);
 
 // Import tools
 import "./tools/api-call";
+import "./tools/experiment-duration-estimator";
 import "./tools/greeting";
 import "./tools/rick-roll";
 import "./tools/sqlite-query";
