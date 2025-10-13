@@ -48,18 +48,20 @@ netlify deploy --prod
 
 The project includes:
 
-- **`netlify.toml`** - Pre-configured with build settings, external node modules, and redirects
+- **`netlify.toml`** - Pre-configured with build settings (uses `npm run build`), external node modules, and redirects
 - **`netlify/functions/api.ts`** - Netlify Function entry point using serverless-http
 - **External node modules** - Express, SQLite3, and Opal SDK configured for bundling
 - **Serverless wrapper** - Uses `serverless-http` to adapt Express for Netlify Functions
 - **Automatic redirects** - All requests routed to the serverless function
+
+**Important:** TypeScript and type definitions are in `dependencies` (not `devDependencies`) to ensure Netlify can build the project.
 
 ## Alternative: Git-based Deployment
 
 1. Connect your repository to Netlify via the web interface
 2. Netlify will automatically detect the configuration from `netlify.toml`
 3. Build settings are pre-configured:
-   - Build command: `yarn build`
+   - Build command: `npm run build`
    - Publish directory: `build`
    - Functions directory: `netlify/functions`
 

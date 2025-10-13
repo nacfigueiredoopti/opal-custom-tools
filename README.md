@@ -59,6 +59,17 @@ Returns a Rick Roll GIF URL for fun interactions.
 **Parameters:**
 - No parameters required
 
+### experiment-duration-estimator
+Estimates how long an A/B test experiment needs to run based on traffic, conversion rates, and desired statistical parameters.
+
+**Parameters:**
+- `dailyTraffic` (required): Average daily traffic (total visitors/users per day)
+- `baselineConversionRate` (required): Baseline conversion rate as decimal (e.g., 0.05 for 5%)
+- `minimumDetectableEffect` (required): Minimum detectable effect (relative lift) as decimal (e.g., 0.1 for 10% relative improvement)
+- `statisticalPower` (optional): Statistical power (1 - β) as decimal. Defaults to 0.8 (80%)
+- `significanceLevel` (optional): Significance level (α) as decimal. Defaults to 0.05 (5%)
+- `numberOfVariants` (optional): Total number of variants including control. Defaults to 2
+
 ### sqlite-query
 Executes SQL queries against a SQLite database.
 
@@ -81,6 +92,7 @@ src/
     todays-date.ts
     api-call.ts
     rick-roll.ts
+    experiment-duration-estimator.ts
     sqlite-query.ts
 vercel/
   index.ts         # Vercel serverless function entry point
