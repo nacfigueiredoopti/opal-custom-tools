@@ -26,7 +26,9 @@ const toolsService = new ToolsService(app);
 // Import tools
 import "./tools/api-call";
 import "./tools/experiment-duration-estimator";
+import "./tools/experiment-overlap-checker";
 import "./tools/greeting";
+import "./tools/metric-variance-analyzer";
 import "./tools/rick-roll";
 import "./tools/sqlite-query";
 import "./tools/todays-date";

@@ -70,6 +70,23 @@ Estimates how long an A/B test experiment needs to run based on traffic, convers
 - `significanceLevel` (optional): Significance level (α) as decimal. Defaults to 0.05 (5%)
 - `numberOfVariants` (optional): Total number of variants including control. Defaults to 2
 
+### metric-variance-analyzer
+Analyzes metric variance and stability over time to determine if a metric is suitable for A/B testing. Calculates statistical measures, detects outliers, and provides stability scoring.
+
+**Parameters:**
+- `metricValues` (required): JSON array of metric values collected over time (e.g., "[10.2, 11.5, 10.8]")
+- `metricName` (optional): Name of the metric being analyzed (e.g., "Conversion Rate")
+- `expectedMean` (optional): Expected mean value for comparison
+- `confidenceLevel` (optional): Confidence level for analysis (0-1). Defaults to 0.95
+
+### experiment-overlap-checker
+Analyzes potential conflicts and audience overlap when running multiple experiments simultaneously. Detects metric conflicts, page conflicts, targeting overlaps, and provides risk assessment.
+
+**Parameters:**
+- `experiments` (required): JSON array of experiment definitions with id, name, audienceSize, trafficAllocation, and optional fields (primaryMetric, affectedPages, targetingRules)
+- `totalAudienceSize` (optional): Total available audience size for utilization calculation
+- `overlapTolerance` (optional): Acceptable overlap percentage (0-100). Defaults to 20
+
 ### sqlite-query
 Executes SQL queries against a SQLite database.
 
@@ -93,6 +110,8 @@ src/
     api-call.ts
     rick-roll.ts
     experiment-duration-estimator.ts
+    experiment-overlap-checker.ts
+    metric-variance-analyzer.ts
     sqlite-query.ts
 vercel/
   index.ts         # Vercel serverless function entry point
