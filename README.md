@@ -87,6 +87,23 @@ Analyzes potential conflicts and audience overlap when running multiple experime
 - `totalAudienceSize` (optional): Total available audience size for utilization calculation
 - `overlapTolerance` (optional): Acceptable overlap percentage (0-100). Defaults to 20
 
+### experiment-lookup
+Looks up detailed information about a specific experiment by ID. Returns configuration, status, metrics, targeting rules, and variations.
+
+**Parameters:**
+- `experimentId` (required): The unique experiment ID (e.g., "exp-123" or "checkout-button-test")
+- `optimizelyApiKey` (optional): Optimizely API key for fetching live data
+
+### experiment-catalog
+Provides a comprehensive overview of all experiments with filtering, grouping, and conflict detection. Get a bird's-eye view of your entire experimentation program.
+
+**Parameters:**
+- `status` (optional): Filter by status - "live"/"running", "paused", "draft", "archived", or "all" (default)
+- `metric` (optional): Filter by primary metric (e.g., "conversion")
+- `page` (optional): Filter by affected page (e.g., "checkout")
+- `targetingRule` (optional): Filter by targeting rule (e.g., "Mobile users")
+- `optimizelyApiKey` (optional): Optimizely API key for fetching live data
+
 ### sqlite-query
 Executes SQL queries against a SQLite database.
 
@@ -110,7 +127,9 @@ src/
     api-call.ts
     rick-roll.ts
     experiment-duration-estimator.ts
+    experiment-lookup.ts
     experiment-overlap-checker.ts
+    experiment-catalog.ts
     metric-variance-analyzer.ts
     sqlite-query.ts
 vercel/
