@@ -56,6 +56,10 @@ async function flagCreator(
     environment = "development",
   } = parameters;
 
+  // Use environment variables as fallback for API credentials
+  const apiKey = optimizelyApiKey || process.env.OPTIMIZELY_API_KEY;
+  const projId = projectId || process.env.OPTIMIZELY_PROJECT_ID;
+
   // Validation
   if (!flagName || flagName.trim() === "") {
     throw new Error("flagName is required and cannot be empty");
@@ -178,12 +182,12 @@ async function flagCreator(
     };
   }
 
-  // If API key and project ID provided, create in Optimizely
-  if (optimizelyApiKey && projectId) {
+  // If API key and project ID available (from params or env), create in Optimizely
+  if (apiKey && projId) {
     try {
       const result = await createFlagInOptimizely({
-        apiKey: optimizelyApiKey,
-        projectId,
+        apiKey: apiKey,
+        projectId: projId,
         flagKey: generatedKey,
         flagName,
         description: description || `Feature flag: ${flagName}`,
@@ -193,13 +197,14 @@ async function flagCreator(
         environment,
       });
 
+      const credSource = optimizelyApiKey ? "parameters" : "environment variables";
       return {
         success: true,
         flagKey: generatedKey,
         flagName,
         flagId: result.flagId,
         apiUrl: result.url,
-        message: `✅ Flag '${flagName}' created successfully in Optimizely!`,
+        message: `✅ Flag '${flagName}' created successfully in Optimizely! (Using credentials from ${credSource})`,
         details: {
           variations: parsedVariations,
           variables: parsedVariables,
@@ -244,7 +249,7 @@ async function flagCreator(
     success: true,
     flagKey: generatedKey,
     flagName,
-    message: `✅ Flag configuration validated successfully! (Use API key to create in Optimizely)`,
+    message: `✅ Flag configuration validated successfully! (No API credentials found - flag not created)`,
     details: {
       variations: parsedVariations,
       variables: parsedVariables,
@@ -252,8 +257,9 @@ async function flagCreator(
       defaultVariation: defaultVar,
     },
     nextSteps: [
-      "Provide optimizelyApiKey and projectId to create flag in Optimizely",
-      "Or manually create this flag using the configuration above",
+      "To auto-create flags: Set OPTIMIZELY_API_KEY and OPTIMIZELY_PROJECT_ID environment variables in Netlify",
+      "Or provide optimizelyApiKey and projectId parameters",
+      "Or manually create this flag in Optimizely using the configuration above",
       `Flag Key: ${generatedKey}`,
       `Variations: ${parsedVariations.map((v) => v.name).join(", ")}`,
     ],
