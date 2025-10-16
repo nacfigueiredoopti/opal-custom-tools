@@ -60,6 +60,16 @@ async function flagCreator(
   const apiKey = optimizelyApiKey || process.env.OPTIMIZELY_API_KEY;
   const projId = projectId || process.env.OPTIMIZELY_PROJECT_ID;
 
+  // Debug logging for Netlify (will appear in function logs)
+  console.log('[flag-creator] Environment check:', {
+    hasApiKeyParam: !!optimizelyApiKey,
+    hasApiKeyEnv: !!process.env.OPTIMIZELY_API_KEY,
+    hasProjectIdParam: !!projectId,
+    hasProjectIdEnv: !!process.env.OPTIMIZELY_PROJECT_ID,
+    nodeEnv: process.env.NODE_ENV,
+    netlify: process.env.NETLIFY
+  });
+
   // Validation
   if (!flagName || flagName.trim() === "") {
     throw new Error("flagName is required and cannot be empty");
