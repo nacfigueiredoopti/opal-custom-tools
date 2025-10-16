@@ -290,29 +290,15 @@ async function createFlagInOptimizely(config: {
   } = config;
 
   // Optimizely REST API endpoint for creating flags
-  const apiUrl = `https://api.optimizely.com/v2/flags`;
+  const apiUrl = `https://api.optimizely.com/flags/v1/projects/${projectId}/flags`;
 
   // Build the flag payload according to Optimizely's API spec
+  // Note: Optimizely API only accepts key, name, and description when creating a flag
+  // Variations, variables, and environment configurations must be added separately after creation
   const payload = {
     key: flagKey,
     name: flagName,
-    description,
-    project_id: projectId,
-    environments: {
-      [environment]: {
-        default_variation: defaultVariation,
-      },
-    },
-    variations: variations.map((v) => ({
-      key: v.key,
-      name: v.name,
-      variables: v.variables || {},
-    })),
-    variables: variables.map((v) => ({
-      key: v.key,
-      type: v.type,
-      default_value: v.defaultValue,
-    })),
+    description: description || `Feature flag: ${flagName}`,
   };
 
   const response = await fetch(apiUrl, {
