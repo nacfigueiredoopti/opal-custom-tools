@@ -1,3 +1,9 @@
+// Load environment variables from .env file in development
+import dotenv from "dotenv";
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config();
+}
+
 import { ToolsService } from "@optimizely-opal/opal-tools-sdk";
 import cors from "cors";
 import express from "express";
