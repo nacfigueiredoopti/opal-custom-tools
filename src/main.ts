@@ -29,6 +29,7 @@ import "./tools/experiment-catalog";
 import "./tools/experiment-duration-estimator";
 import "./tools/experiment-lookup";
 import "./tools/experiment-overlap-checker";
+import "./tools/flag-creator";
 import "./tools/flag-naming-validator";
 import "./tools/greeting";
 import "./tools/metric-variance-analyzer";
