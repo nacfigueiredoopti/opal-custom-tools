@@ -1,0 +1,84 @@
+{
+  "id": "@srm-monitor",
+  "name": "SRM Monitor",
+  "description": "Automated monitoring agent that detects Sample Ratio Mismatch (SRM) issues in Optimizely experiments and sends email alerts when traffic imbalances are detected.",
+  "version": "1.0.0",
+  "type": "specialized",
+  "configuration": {
+    "inference_level": "medium",
+    "creativity": 0.3,
+    "temperature": 0.5
+  },
+  "trigger": {
+    "type": "scheduled",
+    "schedule": "0 */6 * * *",
+    "description": "Run every 6 hours to check for SRM issues"
+  },
+  "tools": [
+    {
+      "name": "srm-detector",
+      "endpoint": "https://famous-kitsune-040201.netlify.app/.netlify/functions/server/tools/srm-detector",
+      "method": "POST",
+      "authentication": {
+        "type": "basic",
+        "username": "admin",
+        "password": "password"
+      },
+      "description": "Detects Sample Ratio Mismatch issues in Optimizely experiments"
+    },
+    {
+      "name": "email-alert",
+      "endpoint": "https://famous-kitsune-040201.netlify.app/.netlify/functions/server/tools/email-alert",
+      "method": "POST",
+      "authentication": {
+        "type": "basic",
+        "username": "admin",
+        "password": "password"
+      },
+      "description": "Sends email alerts for critical experiment issues"
+    }
+  ],
+  "workflow": {
+    "steps": [
+      {
+        "step": 1,
+        "action": "detect_srm",
+        "tool": "srm-detector",
+        "parameters": {
+          "projectId": "5268668553101312",
+          "optimizelyApiToken": "2:pzagrkVVbeQJk1vxgAUWuahBtLlnvrjIq4qDixz-3MhyNC6rSJtk",
+          "experimentIds": "all"
+        },
+        "description": "Check all running experiments for SRM issues"
+      },
+      {
+        "step": 2,
+        "action": "evaluate_results",
+        "condition": "experimentsWithIssues > 0",
+        "description": "Check if any experiments have SRM issues that require attention"
+      },
+      {
+        "step": 3,
+        "action": "send_alert",
+        "tool": "email-alert",
+        "condition": "step 2 is true",
+        "parameters": {
+          "to": "nuno.figueiredo@optimizely.com",
+          "subject": "🚨 Optimizely SRM Alert: Traffic Imbalance Detected",
+          "message": "Generated from SRM detection results - include experiment names, health status, and chi-squared p-values",
+          "emailService": "webhook",
+          "webhookUrl": "YOUR_WEBHOOK_URL_HERE"
+        },
+        "description": "Send email alert if SRM issues are detected"
+      }
+    ]
+  },
+  "instructions": "You are an automated monitoring agent for Optimizely experiments. Your job is to:\n\n1. Regularly check all running experiments in project 5268668553101312 for Sample Ratio Mismatch (SRM) issues\n2. Use the srm-detector tool to analyze traffic distribution across experiment variations\n3. If any experiments show critical or warning health status (traffic imbalance), compose a detailed email alert\n4. The email should include:\n   - List of affected experiments with their IDs and names\n   - Health status (critical or warning)\n   - Actual vs expected traffic allocations for each variation\n   - Chi-squared p-values indicating statistical significance\n   - Recommended actions to investigate the issue\n5. Send the alert to nuno.figueiredo@optimizely.com using the email-alert tool\n6. Only send emails when issues are detected - don't send \"all clear\" emails\n7. Format the email message to be clear, actionable, and professional\n\nSample Ratio Mismatch (SRM) occurs when the actual traffic split differs significantly from the expected split, which can indicate:\n- Implementation bugs in the experiment code\n- Bot traffic or data quality issues  \n- Sampling bias that invalidates results\n- Technical problems with the experimentation platform\n\nAny experiment with a p-value < 0.05 should be flagged, with p-value < 0.01 being critical.",
+  "metadata": {
+    "author": "Nuno Figueiredo",
+    "tags": ["monitoring", "srm", "quality-assurance", "experiments", "alerts"],
+    "project_id": "5268668553101312",
+    "created": "2025-10-29",
+    "alert_recipient": "nuno.figueiredo@optimizely.com"
+  }
+}
