@@ -16,22 +16,48 @@
   },
   "competitors": [
     {
-      "name": "Competitor A",
-      "url": "https://www.competitor-a.com",
+      "name": "Fnac Darty",
+      "url": "https://www.fnacdarty.com",
       "pages_to_monitor": [
-        "/",
-        "/pricing",
-        "/features",
-        "/product"
+        "/en/",
+        "/en/about",
+        "/en/services"
       ]
     },
     {
-      "name": "Competitor B",
-      "url": "https://www.competitor-b.com",
+      "name": "Currys",
+      "url": "https://www.currysplc.com",
       "pages_to_monitor": [
         "/",
-        "/pricing",
-        "/features"
+        "/our-business",
+        "/sustainability"
+      ]
+    },
+    {
+      "name": "Euronics",
+      "url": "https://www.euronics.com",
+      "pages_to_monitor": [
+        "/",
+        "/about",
+        "/services"
+      ]
+    },
+    {
+      "name": "Unieuro",
+      "url": "https://unieurospa.com",
+      "pages_to_monitor": [
+        "/en/",
+        "/en/about-us",
+        "/en/services"
+      ]
+    },
+    {
+      "name": "Euro RTV AGD",
+      "url": "https://www.euro.com.pl",
+      "pages_to_monitor": [
+        "/",
+        "/cms/o-firmie",
+        "/cms/uslugi"
       ]
     }
   ],

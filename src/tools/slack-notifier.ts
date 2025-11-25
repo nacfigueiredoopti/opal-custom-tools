@@ -17,7 +17,7 @@ interface SlackNotifierParameters {
   webhookUrl?: string;
   priority?: "critical" | "high" | "medium" | "low";
   attachScreenshots?: boolean;
-  screenshots?: string[];
+  screenshots?: string[] | string;
   formatAsBlocks?: boolean;
 }
 
@@ -227,9 +227,14 @@ async function slackNotifier(
     webhookUrl,
     priority = "medium",
     attachScreenshots = false,
-    screenshots = [],
+    screenshots: screenshotsParam = [],
     formatAsBlocks = true,
   } = parameters;
+
+  // Parse screenshots if passed as JSON string
+  const screenshots: string[] = typeof screenshotsParam === "string"
+    ? JSON.parse(screenshotsParam)
+    : screenshotsParam || [];
 
   if (!channel || channel.trim() === "") {
     throw new Error("channel is required and cannot be empty");

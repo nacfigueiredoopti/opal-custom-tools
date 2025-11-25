@@ -70,11 +70,11 @@ interface CompetitiveComparison {
 }
 
 interface InsightGeneratorParameters {
-  competitorChanges: CompetitorAnalysis[];
-  ourExperiments?: OptimizelyEvent[];
+  competitorChanges: CompetitorAnalysis[] | string;
+  ourExperiments?: OptimizelyEvent[] | string;
   analysisDepth?: "quick" | "standard" | "deep";
   includeRecommendations?: boolean;
-  focusAreas?: string[]; // e.g., ["pricing", "features", "ux"]
+  focusAreas?: string[] | string; // e.g., ["pricing", "features", "ux"]
 }
 
 interface InsightGeneratorResult {
@@ -441,11 +441,20 @@ async function insightGenerator(
   parameters: InsightGeneratorParameters
 ): Promise<InsightGeneratorResult> {
   const {
-    competitorChanges,
-    ourExperiments = [],
+    competitorChanges: competitorChangesParam,
+    ourExperiments: ourExperimentsParam = [],
     analysisDepth = "standard",
     includeRecommendations = true,
   } = parameters;
+
+  // Parse JSON strings if provided
+  const competitorChanges: CompetitorAnalysis[] = typeof competitorChangesParam === "string"
+    ? JSON.parse(competitorChangesParam)
+    : competitorChangesParam;
+
+  const ourExperiments: OptimizelyEvent[] = typeof ourExperimentsParam === "string"
+    ? JSON.parse(ourExperimentsParam)
+    : ourExperimentsParam || [];
 
   if (!competitorChanges || competitorChanges.length === 0) {
     throw new Error("competitorChanges array is required and cannot be empty");

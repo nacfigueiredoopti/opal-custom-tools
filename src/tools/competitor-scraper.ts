@@ -36,7 +36,7 @@ interface ChangeDetection {
 }
 
 interface CompetitorScraperParameters {
-  competitors: CompetitorConfig[];
+  competitors: CompetitorConfig[] | string;
   screenshotEnabled?: boolean;
   compareWithPrevious?: boolean;
   storageKey?: string; // For storing previous snapshots
@@ -248,11 +248,16 @@ async function competitorScraper(
   parameters: CompetitorScraperParameters
 ): Promise<CompetitorScraperResult> {
   const {
-    competitors,
+    competitors: competitorsParam,
     screenshotEnabled = false,
     compareWithPrevious = false,
     storageKey = "competitor_snapshots",
   } = parameters;
+
+  // Parse competitors if passed as JSON string
+  const competitors: CompetitorConfig[] = typeof competitorsParam === "string"
+    ? JSON.parse(competitorsParam)
+    : competitorsParam;
 
   if (!competitors || competitors.length === 0) {
     throw new Error("At least one competitor must be specified");

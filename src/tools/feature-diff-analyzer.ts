@@ -63,7 +63,7 @@ interface FeatureDiffAnalyzerParameters {
   scrapeResults: {
     snapshots: CompetitorSnapshot[];
     changes?: ChangeDetection;
-  };
+  } | string;
   changeThreshold?: "low" | "medium" | "high";
   detectFeatures?: boolean;
   detectPricing?: boolean;
@@ -406,13 +406,18 @@ async function featureDiffAnalyzer(
   parameters: FeatureDiffAnalyzerParameters
 ): Promise<FeatureDiffAnalyzerResult[]> {
   const {
-    scrapeResults,
+    scrapeResults: scrapeResultsParam,
     changeThreshold = "medium",
     detectFeatures = true,
     detectPricing = true,
     detectUI = true,
     detectMessaging = true,
   } = parameters;
+
+  // Parse scrapeResults if passed as JSON string
+  const scrapeResults = typeof scrapeResultsParam === "string"
+    ? JSON.parse(scrapeResultsParam)
+    : scrapeResultsParam;
 
   if (!scrapeResults || !scrapeResults.snapshots) {
     throw new Error("scrapeResults with snapshots is required");
