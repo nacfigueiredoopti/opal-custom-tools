@@ -502,9 +502,9 @@ tool({
   parameters: [
     {
       name: "scrapeResults",
-      type: ParameterType.Object,
+      type: ParameterType.String,
       description:
-        "Results from the competitor-scraper tool containing snapshots of competitor websites",
+        "JSON results from the competitor-scraper tool containing snapshots of competitor websites",
       required: true,
     },
     {

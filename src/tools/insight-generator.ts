@@ -517,16 +517,16 @@ tool({
   parameters: [
     {
       name: "competitorChanges",
-      type: ParameterType.Object,
+      type: ParameterType.String,
       description:
-        "Array of competitor analysis results from feature-diff-analyzer tool",
+        "JSON array of competitor analysis results from feature-diff-analyzer tool",
       required: true,
     },
     {
       name: "ourExperiments",
-      type: ParameterType.Object,
+      type: ParameterType.String,
       description:
-        "Array of Optimizely events/experiments from oa_find_events representing our product activities",
+        "JSON array of Optimizely events/experiments from oa_find_events representing our product activities",
       required: false,
     },
     {
@@ -545,9 +545,9 @@ tool({
     },
     {
       name: "focusAreas",
-      type: ParameterType.Object,
+      type: ParameterType.String,
       description:
-        "Array of focus areas to emphasize in analysis (e.g., ['pricing', 'features', 'ux']). If not specified, all areas are analyzed equally.",
+        "JSON array of focus areas to emphasize in analysis (e.g., ['pricing', 'features', 'ux']). If not specified, all areas are analyzed equally.",
       required: false,
     },
   ],

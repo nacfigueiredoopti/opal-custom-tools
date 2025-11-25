@@ -323,9 +323,9 @@ tool({
   parameters: [
     {
       name: "competitors",
-      type: ParameterType.Object,
+      type: ParameterType.String,
       description:
-        'Array of competitor configurations, each with name, url, and pages_to_monitor. Example: [{"name": "Competitor A", "url": "https://competitor.com", "pages_to_monitor": ["/", "/pricing", "/features"]}]',
+        'JSON array of competitor configurations, each with name, url, and pages_to_monitor. Example: [{"name": "Competitor A", "url": "https://competitor.com", "pages_to_monitor": ["/", "/pricing", "/features"]}]',
       required: true,
     },
     {

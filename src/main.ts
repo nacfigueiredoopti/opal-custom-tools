@@ -31,16 +31,20 @@ const toolsService = new ToolsService(app);
 
 // Import tools
 import "./tools/api-call";
+import "./tools/competitor-scraper";
 import "./tools/email-alert";
 import "./tools/experiment-catalog";
 import "./tools/experiment-duration-estimator";
 import "./tools/experiment-lookup";
 import "./tools/experiment-overlap-checker";
+import "./tools/feature-diff-analyzer";
 import "./tools/flag-creator";
 import "./tools/flag-naming-validator";
 import "./tools/greeting";
+import "./tools/insight-generator";
 import "./tools/metric-variance-analyzer";
 import "./tools/rick-roll";
+import "./tools/slack-notifier";
 import "./tools/srm-detector";
 import "./tools/sqlite-query";
 import "./tools/todays-date";

@@ -340,9 +340,9 @@ tool({
     },
     {
       name: "screenshots",
-      type: ParameterType.Object,
+      type: ParameterType.String,
       description:
-        "Array of screenshot URLs or base64 data to attach to the message.",
+        "JSON array of screenshot URLs or base64 data to attach to the message.",
       required: false,
     },
     {
