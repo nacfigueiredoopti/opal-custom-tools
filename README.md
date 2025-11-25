@@ -2,6 +2,21 @@
 
 A custom tools service for Optimizely Opal that exposes tools via HTTP endpoints using the `@optimizely-opal/opal-tools-sdk`.
 
+## Featured Agents
+
+### Competitive Intelligence Monitor
+An automated agent that monitors competitor websites, detects strategic changes, and generates actionable intelligence reports. See [COMPETITIVE_INTELLIGENCE_SETUP.md](COMPETITIVE_INTELLIGENCE_SETUP.md) for setup instructions.
+
+**What it does:**
+- Automatically scrapes competitor websites daily
+- Detects new features, pricing changes, UI updates, and messaging shifts
+- Compares competitor moves with your Optimizely experiments
+- Generates prioritized strategic insights and recommendations
+- Sends formatted reports to Slack
+
+### SRM Monitor
+An automated monitoring agent that detects Sample Ratio Mismatch (SRM) issues in Optimizely experiments. See [SRM_MONITOR_SETUP.md](SRM_MONITOR_SETUP.md) for setup instructions.
+
 ## Getting Started
 
 ### Prerequisites
@@ -111,6 +126,68 @@ Executes SQL queries against a SQLite database.
 - `query` (required): SQL query to execute
 - `params` (optional): Query parameters for prepared statements
 
+### srm-detector
+Detects Sample Ratio Mismatch (SRM) issues in Optimizely experiments by analyzing traffic distribution across variations. Uses chi-squared statistical test to identify significant imbalances.
+
+**Parameters:**
+- `projectId` (required): The Optimizely project ID to check for SRM issues
+- `optimizelyApiToken` (required): Optimizely API token with read access to experiments and stats
+- `experimentIds` (optional): Comma-separated list of experiment IDs, or "all" to check all running experiments (default: "all")
+
+### email-alert
+Sends email alerts for critical experiment issues and monitoring events.
+
+**Parameters:**
+- `to` (required): Email address to send the alert to
+- `subject` (required): Email subject line
+- `message` (required): Email body content
+- `emailService` (optional): Email service to use (e.g., "webhook")
+- `webhookUrl` (optional): Webhook URL for email delivery
+
+## Competitive Intelligence Tools
+
+### competitor-scraper
+Scrapes competitor websites and detects changes from previous snapshots. Captures page content, headings, links, and can optionally compare with previous visits.
+
+**Parameters:**
+- `competitors` (required): Array of competitor configurations with name, url, and pages_to_monitor
+- `screenshotEnabled` (optional): Whether to capture screenshots of pages. Defaults to false
+- `compareWithPrevious` (optional): Whether to compare with previously stored snapshots. Defaults to false
+- `storageKey` (optional): Storage key for saving/loading snapshots. Defaults to 'competitor_snapshots'
+
+### feature-diff-analyzer
+Analyzes competitor website snapshots to identify and categorize changes including new features, pricing updates, UI/UX changes, and messaging shifts.
+
+**Parameters:**
+- `scrapeResults` (required): Results from the competitor-scraper tool
+- `changeThreshold` (optional): Sensitivity threshold: 'low', 'medium', or 'high'. Defaults to 'medium'
+- `detectFeatures` (optional): Whether to detect new features. Defaults to true
+- `detectPricing` (optional): Whether to detect pricing changes. Defaults to true
+- `detectUI` (optional): Whether to detect UI/UX changes. Defaults to true
+- `detectMessaging` (optional): Whether to detect messaging changes. Defaults to true
+
+### insight-generator
+Generates strategic competitive intelligence insights by analyzing competitor changes in context of your Optimizely experiments. Identifies threats, opportunities, market trends, and provides actionable recommendations.
+
+**Parameters:**
+- `competitorChanges` (required): Array of competitor analysis results from feature-diff-analyzer
+- `ourExperiments` (optional): Array of Optimizely events/experiments representing your product activities
+- `analysisDepth` (optional): Analysis depth: 'quick', 'standard', or 'deep'. Defaults to 'standard'
+- `includeRecommendations` (optional): Whether to include actionable recommendations. Defaults to true
+- `focusAreas` (optional): Array of focus areas to emphasize (e.g., ['pricing', 'features', 'ux'])
+
+### slack-notifier
+Sends formatted notifications and reports to Slack channels. Supports rich formatting with Slack blocks, priority indicators, and markdown conversion.
+
+**Parameters:**
+- `channel` (required): Slack channel to send the message to (e.g., '#competitive-intelligence')
+- `message` (required): Message content (plain text or markdown)
+- `webhookUrl` (optional): Slack webhook URL for sending messages
+- `priority` (optional): Message priority: 'critical', 'high', 'medium', or 'low'. Defaults to 'medium'
+- `attachScreenshots` (optional): Whether to attach screenshots. Defaults to false
+- `screenshots` (optional): Array of screenshot URLs or base64 data
+- `formatAsBlocks` (optional): Whether to use Slack blocks for rich formatting. Defaults to true
+
 ## Architecture
 
 This service uses Express.js with CORS enabled to serve tools. Each tool is implemented as a separate module in the `src/tools/` directory and registered using the `@tool` decorator pattern from the Opal tools SDK.
@@ -132,6 +209,13 @@ src/
     experiment-catalog.ts
     metric-variance-analyzer.ts
     sqlite-query.ts
+    srm-detector.ts
+    email-alert.ts
+    # Competitive Intelligence Tools
+    competitor-scraper.ts
+    feature-diff-analyzer.ts
+    insight-generator.ts
+    slack-notifier.ts
 vercel/
   index.ts         # Vercel serverless function entry point
 netlify/
@@ -139,6 +223,8 @@ netlify/
     api.ts         # Netlify Functions entry point
 build/             # Compiled JavaScript output
 docs/              # Deployment documentation
+opal-agent-competitive-intelligence.json  # Competitive Intelligence agent config
+COMPETITIVE_INTELLIGENCE_SETUP.md         # Setup guide for CI agent
 ```
 
 ### Adding New Tools

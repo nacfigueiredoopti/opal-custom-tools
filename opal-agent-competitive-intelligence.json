@@ -1,0 +1,167 @@
+{
+  "id": "@competitive-intelligence",
+  "name": "Competitive Intelligence Monitor",
+  "description": "Automated agent that monitors competitor websites, detects changes and new features, and generates insights by comparing competitor moves with your Optimizely experiments and analytics data.",
+  "version": "1.0.0",
+  "agent_type": "specialized",
+  "configuration": {
+    "inference_level": "high",
+    "creativity": 0.7,
+    "temperature": 0.6
+  },
+  "trigger": {
+    "type": "scheduled",
+    "schedule": "0 0 * * *",
+    "description": "Run daily at midnight to monitor competitor changes"
+  },
+  "competitors": [
+    {
+      "name": "Competitor A",
+      "url": "https://www.competitor-a.com",
+      "pages_to_monitor": [
+        "/",
+        "/pricing",
+        "/features",
+        "/product"
+      ]
+    },
+    {
+      "name": "Competitor B",
+      "url": "https://www.competitor-b.com",
+      "pages_to_monitor": [
+        "/",
+        "/pricing",
+        "/features"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "name": "competitor-scraper",
+      "endpoint": "https://famous-kitsune-040201.netlify.app/.netlify/functions/server/tools/competitor-scraper",
+      "method": "POST",
+      "authentication": {
+        "type": "basic",
+        "username": "admin",
+        "password": "password"
+      },
+      "description": "Scrapes competitor websites and detects changes from previous snapshots"
+    },
+    {
+      "name": "feature-diff-analyzer",
+      "endpoint": "https://famous-kitsune-040201.netlify.app/.netlify/functions/server/tools/feature-diff-analyzer",
+      "method": "POST",
+      "authentication": {
+        "type": "basic",
+        "username": "admin",
+        "password": "password"
+      },
+      "description": "Analyzes differences between current and previous competitor snapshots to identify new features, pricing changes, and UI updates"
+    },
+    {
+      "name": "insight-generator",
+      "endpoint": "https://famous-kitsune-040201.netlify.app/.netlify/functions/server/tools/insight-generator",
+      "method": "POST",
+      "authentication": {
+        "type": "basic",
+        "username": "admin",
+        "password": "password"
+      },
+      "description": "Generates strategic insights by comparing competitor changes with your Optimizely experiment data and analytics"
+    },
+    {
+      "name": "oa_find_events",
+      "type": "optimizely_analytics",
+      "description": "Searches for and returns analytics events to compare with competitor features"
+    },
+    {
+      "name": "oa_find_entities",
+      "type": "optimizely_analytics",
+      "description": "Searches for analytics entities (properties/attributes) related to features"
+    },
+    {
+      "name": "slack-notifier",
+      "endpoint": "https://famous-kitsune-040201.netlify.app/.netlify/functions/server/tools/slack-notifier",
+      "method": "POST",
+      "authentication": {
+        "type": "basic",
+        "username": "admin",
+        "password": "password"
+      },
+      "description": "Sends formatted intelligence reports to Slack"
+    }
+  ],
+  "workflow": {
+    "steps": [
+      {
+        "step": 1,
+        "action": "scrape_competitors",
+        "tool": "competitor-scraper",
+        "parameters": {
+          "competitors": "{{competitors}}",
+          "screenshotEnabled": true,
+          "compareWithPrevious": true
+        },
+        "description": "Scrape all configured competitor websites and capture snapshots"
+      },
+      {
+        "step": 2,
+        "action": "analyze_changes",
+        "tool": "feature-diff-analyzer",
+        "parameters": {
+          "scrapeResults": "{{step1.results}}",
+          "changeThreshold": "medium",
+          "detectFeatures": true,
+          "detectPricing": true,
+          "detectUI": true
+        },
+        "description": "Analyze differences and identify significant changes"
+      },
+      {
+        "step": 3,
+        "action": "fetch_our_experiments",
+        "tool": "oa_find_events",
+        "parameters": {
+          "query": "feature OR experiment OR test",
+          "timeRange": "last_30_days"
+        },
+        "description": "Get our recent experiments and feature launches from Optimizely Analytics"
+      },
+      {
+        "step": 4,
+        "action": "generate_insights",
+        "tool": "insight-generator",
+        "condition": "step2.changesDetected === true",
+        "parameters": {
+          "competitorChanges": "{{step2.results}}",
+          "ourExperiments": "{{step3.results}}",
+          "analysisDepth": "deep",
+          "includeRecommendations": true
+        },
+        "description": "Generate strategic insights comparing competitor moves with our activities"
+      },
+      {
+        "step": 5,
+        "action": "send_report",
+        "tool": "slack-notifier",
+        "condition": "step2.changesDetected === true",
+        "parameters": {
+          "channel": "#competitive-intelligence",
+          "message": "{{step4.insights}}",
+          "attachScreenshots": true,
+          "screenshots": "{{step1.screenshots}}",
+          "priority": "{{step4.priority}}"
+        },
+        "description": "Send intelligence report to Slack if changes detected"
+      }
+    ]
+  },
+  "instructions": "You are a competitive intelligence monitoring agent for product and experimentation teams. Your responsibilities:\n\n1. **Daily Monitoring**: Check all configured competitor websites for changes\n   - Capture full page content and screenshots\n   - Compare with previous snapshots to detect changes\n   - Focus on product features, pricing, UI/UX updates, and messaging\n\n2. **Change Detection & Analysis**:\n   - Identify NEW features or product launches\n   - Detect pricing changes or plan modifications\n   - Spot UI/UX redesigns or A/B tests they might be running\n   - Flag significant messaging or positioning changes\n\n3. **Contextual Intelligence**:\n   - Fetch our recent experiments and feature launches from Optimizely Analytics\n   - Compare competitor moves with what we're testing/building\n   - Identify gaps where competitors are ahead\n   - Spot opportunities where we're leading\n\n4. **Strategic Insights**:\n   - Are competitors copying our features?\n   - Are they testing something we should consider?\n   - Do pricing changes impact our positioning?\n   - What patterns emerge from their product strategy?\n\n5. **Reporting**:\n   - Only send alerts when meaningful changes are detected\n   - Prioritize: CRITICAL (major feature/pricing), HIGH (significant UI), MEDIUM (minor updates)\n   - Include screenshots showing before/after\n   - Provide actionable recommendations\n   - Format for product managers and experiment teams\n\n**Output Format**:\n- Executive Summary (2-3 sentences)\n- Competitor Changes (bulleted list with details)\n- Our Related Activities (experiments/features we're running)\n- Strategic Implications (what this means for us)\n- Recommended Actions (specific next steps)\n\n**Intelligence Philosophy**:\n- Focus on learning, not just tracking\n- Provide context, not just facts\n- Be actionable, not just informative\n- Respect that inspiration is different from copying",
+  "metadata": {
+    "author": "Nuno Figueiredo",
+    "tags": ["competitive-intelligence", "monitoring", "product-strategy", "market-research"],
+    "project_id": "5268668553101312",
+    "created": "2025-01-25",
+    "alert_channels": ["#competitive-intelligence", "#product-team"]
+  }
+}
