@@ -98,24 +98,19 @@ async function getPageContent(token: string, pageKey: string): Promise<any> {
   return await response.json();
 }
 
-async function updatePageContent(token: string, pageKey: string, newBodyHtml: string): Promise<any> {
+async function updatePageContent(token: string, pageKey: string, newBodyHtml: string, existingPageData: any): Promise<any> {
+  // Update the Body property in the existing page data
+  existingPageData.locales.en.properties.Body = newBodyHtml;
+
   const response = await fetch(
     `https://api.cms.optimizely.com/preview3/experimental/content/${pageKey}`,
     {
-      method: 'PATCH',
+      method: 'PUT',
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        locales: {
-          en: {
-            properties: {
-              Body: newBodyHtml
-            }
-          }
-        }
-      })
+      body: JSON.stringify(existingPageData)
     }
   );
 
@@ -195,7 +190,7 @@ async function cmsUpdatePageBanner(parameters: CmsUpdatePageBannerParameters) {
 
   let updateResult = null;
   if (!dryRun) {
-    updateResult = await updatePageContent(token, pageKey, newBody);
+    updateResult = await updatePageContent(token, pageKey, newBody, pageData);
   }
 
   return {
