@@ -13,8 +13,8 @@ const BANNER_TEMPLATES = [
   {
     week: 1,
     title: 'Week 1: Black Friday Early Access',
-    startDate: '2025-12-02T09:00:00Z',
-    endDate: '2025-12-09T09:00:00Z',
+    startDate: '2025-12-01T09:00:00Z',
+    endDate: '2025-12-08T09:00:00Z',
     html: `<div class="promotional-banner" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 60px 40px; border-radius: 12px; color: white; text-align: center; margin: 40px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
   <h2 style="font-size: 2.5rem; margin: 0 0 20px 0; font-weight: bold;">🎉 Black Friday Early Access</h2>
   <p style="font-size: 1.3rem; margin: 0 0 25px 0; opacity: 0.95;">Get 40% off all products! Limited time offer.</p>
@@ -24,8 +24,8 @@ const BANNER_TEMPLATES = [
   {
     week: 2,
     title: 'Week 2: Smart Home Week',
-    startDate: '2025-12-09T09:00:00Z',
-    endDate: '2025-12-16T09:00:00Z',
+    startDate: '2025-12-08T09:00:00Z',
+    endDate: '2025-12-15T09:00:00Z',
     html: `<div class="promotional-banner" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 60px 40px; border-radius: 12px; color: white; text-align: center; margin: 40px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
   <h2 style="font-size: 2.5rem; margin: 0 0 20px 0; font-weight: bold;">🏡 Smart Home Week</h2>
   <p style="font-size: 1.3rem; margin: 0 0 25px 0; opacity: 0.95;">Save up to 35% on smart home devices and automation.</p>
@@ -35,8 +35,8 @@ const BANNER_TEMPLATES = [
   {
     week: 3,
     title: 'Week 3: Energy Savings Event',
-    startDate: '2025-12-16T09:00:00Z',
-    endDate: '2025-12-23T09:00:00Z',
+    startDate: '2025-12-15T09:00:00Z',
+    endDate: '2025-12-22T09:00:00Z',
     html: `<div class="promotional-banner" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 60px 40px; border-radius: 12px; color: white; text-align: center; margin: 40px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
   <h2 style="font-size: 2.5rem; margin: 0 0 20px 0; font-weight: bold;">⚡ Energy Savings Event</h2>
   <p style="font-size: 1.3rem; margin: 0 0 25px 0; opacity: 0.95;">Reduce your bills! Special pricing on energy-efficient solutions.</p>
@@ -46,8 +46,8 @@ const BANNER_TEMPLATES = [
   {
     week: 4,
     title: 'Week 4: Cyber Monday Finale',
-    startDate: '2025-12-23T09:00:00Z',
-    endDate: '2025-12-30T09:00:00Z',
+    startDate: '2025-12-22T09:00:00Z',
+    endDate: '2025-12-29T09:00:00Z',
     html: `<div class="promotional-banner" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); padding: 60px 40px; border-radius: 12px; color: white; text-align: center; margin: 40px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
   <h2 style="font-size: 2.5rem; margin: 0 0 20px 0; font-weight: bold;">🎊 Cyber Monday Finale</h2>
   <p style="font-size: 1.3rem; margin: 0 0 25px 0; opacity: 0.95;">Last chance! Up to 50% off sitewide. Don't miss out!</p>
