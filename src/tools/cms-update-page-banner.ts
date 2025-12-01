@@ -99,6 +99,11 @@ async function getPageContent(token: string, pageKey: string): Promise<any> {
 }
 
 async function updatePageContent(token: string, pageKey: string, newBodyHtml: string, existingPageData: any): Promise<any> {
+  // Ensure properties object exists
+  if (!existingPageData.locales.en.properties) {
+    existingPageData.locales.en.properties = {};
+  }
+
   // Update the Body property in the existing page data
   existingPageData.locales.en.properties.Body = newBodyHtml;
 
