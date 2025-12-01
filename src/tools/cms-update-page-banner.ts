@@ -82,7 +82,7 @@ async function authenticate(clientId: string, clientSecret: string): Promise<str
 
 async function getPageContent(token: string, pageKey: string): Promise<any> {
   const response = await fetch(
-    `https://api.cms.optimizely.com/preview3/experimental/content/${pageKey}`,
+    `https://api.cms.optimizely.com/preview3/experimental/content/${pageKey}/versions`,
     {
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -95,27 +95,30 @@ async function getPageContent(token: string, pageKey: string): Promise<any> {
     throw new Error(`Failed to get page: ${response.statusText}`);
   }
 
-  return await response.json();
-}
+  const data = await response.json();
 
-async function updatePageContent(token: string, pageKey: string, newBodyHtml: string, existingPageData: any): Promise<any> {
-  // Ensure properties object exists
-  if (!existingPageData.locales.en.properties) {
-    existingPageData.locales.en.properties = {};
+  // Return the first (current) version
+  if (data.items && data.items.length > 0) {
+    return data.items[0];
   }
 
-  // Update the Body property in the existing page data
-  existingPageData.locales.en.properties.Body = newBodyHtml;
+  throw new Error('No versions found for page');
+}
 
+async function updatePageContent(token: string, pageKey: string, newBodyHtml: string, versionId: string): Promise<any> {
   const response = await fetch(
-    `https://api.cms.optimizely.com/preview3/experimental/content/${pageKey}`,
+    `https://api.cms.optimizely.com/preview3/experimental/content/${pageKey}/versions/${versionId}`,
     {
-      method: 'PUT',
+      method: 'PATCH',
       headers: {
         'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/merge-patch+json'
       },
-      body: JSON.stringify(existingPageData)
+      body: JSON.stringify({
+        properties: {
+          Body: newBodyHtml
+        }
+      })
     }
   );
 
@@ -168,15 +171,15 @@ async function cmsUpdatePageBanner(parameters: CmsUpdatePageBannerParameters) {
   const now = new Date();
   const token = await authenticate(optimizelyClientId, optimizelyClientSecret);
 
-  // Get current page content
-  const pageData = await getPageContent(token, pageKey);
-  const locale = pageData.locales?.en;
+  // Get current page content (returns version data)
+  const pageVersion = await getPageContent(token, pageKey);
 
-  if (!locale) {
-    throw new Error('Page locale data not found');
+  if (!pageVersion.properties) {
+    throw new Error('Page properties not found');
   }
 
-  const currentBody = locale.properties?.Body || '';
+  const currentBody = pageVersion.properties.Body || '';
+  const versionId = pageVersion.version;
   const activeBanner = getActiveBanner(now);
 
   if (!activeBanner) {
@@ -195,7 +198,7 @@ async function cmsUpdatePageBanner(parameters: CmsUpdatePageBannerParameters) {
 
   let updateResult = null;
   if (!dryRun) {
-    updateResult = await updatePageContent(token, pageKey, newBody, pageData);
+    updateResult = await updatePageContent(token, pageKey, newBody, versionId);
   }
 
   return {
@@ -210,7 +213,7 @@ async function cmsUpdatePageBanner(parameters: CmsUpdatePageBannerParameters) {
     },
     action: 'updated',
     pageKey,
-    pageTitle: locale.displayName,
+    pageTitle: pageVersion.displayName,
     message: dryRun
       ? `Would update page with: ${activeBanner.title}`
       : `Successfully updated page with: ${activeBanner.title}`,
