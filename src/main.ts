@@ -33,6 +33,7 @@ const toolsService = new ToolsService(app);
 import "./tools/api-call";
 import "./tools/cms-list-banners";
 import "./tools/cms-rotate-banners";
+import "./tools/cms-update-page-banner";
 import "./tools/competitor-scraper";
 import "./tools/email-alert";
 import "./tools/experiment-catalog";
