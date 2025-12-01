@@ -163,7 +163,7 @@ function replaceBannerInContent(currentBody: string, newBannerHtml: string): str
 }
 
 async function cmsUpdatePageBanner(parameters: CmsUpdatePageBannerParameters) {
-  const {
+  let {
     optimizelyClientId = process.env.OPTIMIZELY_CLIENT_ID,
     optimizelyClientSecret = process.env.OPTIMIZELY_CLIENT_SECRET,
     pageKey = DEFAULT_PAGE_KEY,
@@ -173,6 +173,21 @@ async function cmsUpdatePageBanner(parameters: CmsUpdatePageBannerParameters) {
 
   if (!optimizelyClientId || !optimizelyClientSecret) {
     throw new Error('Optimizely credentials required. Please provide optimizelyClientId and optimizelyClientSecret');
+  }
+
+  // Auto-fix common mistake: if pageKey looks like "week_X" or is a number, treat it as week parameter
+  if (!week && pageKey !== DEFAULT_PAGE_KEY) {
+    // Check if pageKey is "week_1", "week_2", etc.
+    const weekMatch = pageKey.match(/^week_?(\d)$/i);
+    if (weekMatch) {
+      week = weekMatch[1];
+      pageKey = DEFAULT_PAGE_KEY;
+    }
+    // Check if pageKey is just a number "1", "2", "3", "4"
+    else if (/^[1-4]$/.test(pageKey)) {
+      week = pageKey;
+      pageKey = DEFAULT_PAGE_KEY;
+    }
   }
 
   const now = new Date();
