@@ -5,6 +5,7 @@ interface CmsUpdatePageBannerParameters {
   optimizelyClientSecret?: string;
   pageKey?: string;
   dryRun?: boolean;
+  date?: string;
 }
 
 const DEFAULT_PAGE_KEY = '913e8eed60ad49bc9467efd7698b6608'; // Use Case 4 - Scheduled Promotions
@@ -161,14 +162,16 @@ async function cmsUpdatePageBanner(parameters: CmsUpdatePageBannerParameters) {
     optimizelyClientId = process.env.OPTIMIZELY_CLIENT_ID,
     optimizelyClientSecret = process.env.OPTIMIZELY_CLIENT_SECRET,
     pageKey = DEFAULT_PAGE_KEY,
-    dryRun = false
+    dryRun = false,
+    date
   } = parameters;
 
   if (!optimizelyClientId || !optimizelyClientSecret) {
     throw new Error('Optimizely credentials required. Please provide optimizelyClientId and optimizelyClientSecret');
   }
 
-  const now = new Date();
+  // Use provided date or current date
+  const now = date ? new Date(date) : new Date();
   const token = await authenticate(optimizelyClientId, optimizelyClientSecret);
 
   // Get current page content (returns version data)
@@ -186,7 +189,8 @@ async function cmsUpdatePageBanner(parameters: CmsUpdatePageBannerParameters) {
     return {
       success: true,
       timestamp: now.toISOString(),
-      message: 'No banner is scheduled to be active at this time',
+      referenceDate: date || now.toISOString(),
+      message: `No banner is scheduled to be active at this time (reference date: ${date || 'now'})`,
       currentBanner: null,
       dryRun,
       action: 'no_change'
@@ -204,6 +208,7 @@ async function cmsUpdatePageBanner(parameters: CmsUpdatePageBannerParameters) {
   return {
     success: true,
     timestamp: now.toISOString(),
+    referenceDate: date || now.toISOString(),
     dryRun,
     activeBanner: {
       week: activeBanner.week,
@@ -215,15 +220,15 @@ async function cmsUpdatePageBanner(parameters: CmsUpdatePageBannerParameters) {
     pageKey,
     pageTitle: pageVersion.displayName,
     message: dryRun
-      ? `Would update page with: ${activeBanner.title}`
-      : `Successfully updated page with: ${activeBanner.title}`,
+      ? `Would update page with: ${activeBanner.title} (reference date: ${date || 'now'})`
+      : `Successfully updated page with: ${activeBanner.title} (reference date: ${date || 'now'})`,
     updated: !dryRun
   };
 }
 
 tool({
   name: 'cms-update-page-banner',
-  description: 'Directly updates the Use Case 4 page content with the correct promotional banner based on the current date. Replaces the banner HTML in the page body without requiring frontend changes. Designed to run on a schedule (e.g., every Monday at 9am).',
+  description: 'Directly updates the Use Case 4 page content with the correct promotional banner based on a specified date or current date. Replaces the banner HTML in the page body without requiring frontend changes. Designed to run on a schedule (e.g., every Monday at 9am).',
   parameters: [
     {
       name: 'optimizelyClientId',
@@ -247,6 +252,12 @@ tool({
       name: 'dryRun',
       type: ParameterType.Boolean,
       description: 'If true, simulates the update without making actual changes. Useful for testing. Defaults to false.',
+      required: false
+    },
+    {
+      name: 'date',
+      type: ParameterType.String,
+      description: 'Optional date to use for banner selection (ISO 8601 format, e.g., "2025-12-10T09:00:00Z"). If not provided, uses current date. Useful for testing different banners.',
       required: false
     }
   ]
