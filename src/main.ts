@@ -31,6 +31,8 @@ const toolsService = new ToolsService(app);
 
 // Import tools
 import "./tools/api-call";
+import "./tools/cms-list-banners";
+import "./tools/cms-rotate-banners";
 import "./tools/competitor-scraper";
 import "./tools/email-alert";
 import "./tools/experiment-catalog";
