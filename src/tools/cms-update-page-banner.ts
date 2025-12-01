@@ -5,7 +5,7 @@ interface CmsUpdatePageBannerParameters {
   optimizelyClientSecret?: string;
   pageKey?: string;
   dryRun?: boolean;
-  date?: string;
+  week?: string;
 }
 
 const DEFAULT_PAGE_KEY = '913e8eed60ad49bc9467efd7698b6608'; // Use Case 4 - Scheduled Promotions
@@ -131,6 +131,11 @@ async function updatePageContent(token: string, pageKey: string, newBodyHtml: st
   return await response.json();
 }
 
+function getBannerByWeek(weekNumber: number) {
+  const banner = BANNER_TEMPLATES.find(b => b.week === weekNumber);
+  return banner || null;
+}
+
 function getActiveBanner(now: Date) {
   for (const banner of BANNER_TEMPLATES) {
     const start = new Date(banner.startDate);
@@ -163,15 +168,14 @@ async function cmsUpdatePageBanner(parameters: CmsUpdatePageBannerParameters) {
     optimizelyClientSecret = process.env.OPTIMIZELY_CLIENT_SECRET,
     pageKey = DEFAULT_PAGE_KEY,
     dryRun = false,
-    date
+    week
   } = parameters;
 
   if (!optimizelyClientId || !optimizelyClientSecret) {
     throw new Error('Optimizely credentials required. Please provide optimizelyClientId and optimizelyClientSecret');
   }
 
-  // Use provided date or current date
-  const now = date ? new Date(date) : new Date();
+  const now = new Date();
   const token = await authenticate(optimizelyClientId, optimizelyClientSecret);
 
   // Get current page content (returns version data)
@@ -183,14 +187,29 @@ async function cmsUpdatePageBanner(parameters: CmsUpdatePageBannerParameters) {
 
   const currentBody = pageVersion.properties.Body || '';
   const versionId = pageVersion.version;
-  const activeBanner = getActiveBanner(now);
+
+  // Determine which banner to use: week parameter takes priority, otherwise use current date
+  let activeBanner;
+  let selectionMethod;
+
+  if (week) {
+    const weekNum = parseInt(week);
+    if (isNaN(weekNum) || weekNum < 1 || weekNum > 4) {
+      throw new Error(`Invalid week number: ${week}. Must be 1, 2, 3, or 4.`);
+    }
+    activeBanner = getBannerByWeek(weekNum);
+    selectionMethod = `week ${weekNum}`;
+  } else {
+    activeBanner = getActiveBanner(now);
+    selectionMethod = `current date (${now.toISOString().split('T')[0]})`;
+  }
 
   if (!activeBanner) {
     return {
       success: true,
       timestamp: now.toISOString(),
-      referenceDate: date || now.toISOString(),
-      message: `No banner is scheduled to be active at this time (reference date: ${date || 'now'})`,
+      selectionMethod,
+      message: `No banner is active for ${selectionMethod}`,
       currentBanner: null,
       dryRun,
       action: 'no_change'
@@ -208,7 +227,7 @@ async function cmsUpdatePageBanner(parameters: CmsUpdatePageBannerParameters) {
   return {
     success: true,
     timestamp: now.toISOString(),
-    referenceDate: date || now.toISOString(),
+    selectionMethod,
     dryRun,
     activeBanner: {
       week: activeBanner.week,
@@ -220,15 +239,15 @@ async function cmsUpdatePageBanner(parameters: CmsUpdatePageBannerParameters) {
     pageKey,
     pageTitle: pageVersion.displayName,
     message: dryRun
-      ? `Would update page with: ${activeBanner.title} (reference date: ${date || 'now'})`
-      : `Successfully updated page with: ${activeBanner.title} (reference date: ${date || 'now'})`,
+      ? `Would update page with: ${activeBanner.title} (selected by ${selectionMethod})`
+      : `Successfully updated page with: ${activeBanner.title} (selected by ${selectionMethod})`,
     updated: !dryRun
   };
 }
 
 tool({
   name: 'cms-update-page-banner',
-  description: 'Directly updates the Use Case 4 page content with the correct promotional banner based on a specified date or current date. Replaces the banner HTML in the page body without requiring frontend changes. Designed to run on a schedule (e.g., every Monday at 9am).',
+  description: 'Updates the Use Case 4 page with a promotional banner. Can specify a week number (1-4) or use current date to determine which banner. Week 1: Black Friday, Week 2: Smart Home, Week 3: Energy Savings, Week 4: Cyber Monday.',
   parameters: [
     {
       name: 'optimizelyClientId',
@@ -255,9 +274,9 @@ tool({
       required: false
     },
     {
-      name: 'date',
+      name: 'week',
       type: ParameterType.String,
-      description: 'Optional date to use for banner selection (ISO 8601 format, e.g., "2025-12-10T09:00:00Z"). If not provided, uses current date. Useful for testing different banners.',
+      description: 'Optional week number (1, 2, 3, or 4) to select a specific banner. If not provided, uses current date to determine the active banner. Week 1: Black Friday, Week 2: Smart Home, Week 3: Energy Savings, Week 4: Cyber Monday.',
       required: false
     }
   ]
