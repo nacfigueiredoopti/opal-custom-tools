@@ -50,6 +50,7 @@ import "./tools/rick-roll";
 import "./tools/slack-notifier";
 import "./tools/srm-detector";
 import "./tools/sqlite-query";
+import "./tools/tealium";
 import "./tools/todays-date";
 
 // Export the Express app for serverless environments
