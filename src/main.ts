@@ -52,6 +52,9 @@ import "./tools/srm-detector";
 import "./tools/sqlite-query";
 import "./tools/tealium";
 import "./tools/todays-date";
+import "./tools/sonova-cro-lookup";
+import "./tools/sonova-cro-score-hypothesis";
+import "./tools/sonova-cro-summarize";
 
 // Export the Express app for serverless environments
 export { app };
