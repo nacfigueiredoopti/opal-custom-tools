@@ -10,8 +10,28 @@
     "temperature": 0.3
   },
   "trigger": {
-    "type": "on_demand",
-    "description": "Invoked by a user when they want a pre-launch design review of an A/B test."
+    "type": "webhook",
+    "endpoint": "/webhooks/cmp/creative-design",
+    "source": "optimizely-cmp",
+    "filter": {
+      "step.name": "Creative Design",
+      "step.status": "in_progress"
+    },
+    "payload_mapping": {
+      "experiment_name": "task.name",
+      "cmp_task_id": "task.id",
+      "cmp_workflow_id": "task.workflow_id",
+      "hypothesis": "task.fields.hypothesis",
+      "variations": "task.variations",
+      "primary_metric": "task.fields.primary_metric",
+      "guardrail_metrics": "task.fields.guardrail_metrics",
+      "audience": "task.fields.audience",
+      "baseline_rate": "task.fields.baseline_rate",
+      "mde_relative": "task.fields.mde_relative",
+      "proposed_duration_days": "task.fields.proposed_duration_days",
+      "daily_traffic_per_variant": "task.fields.daily_traffic_per_variant"
+    },
+    "description": "Triggered when a CMP task enters the 'Creative Design' workflow step. Configure the matching webhook on the Optimizely CMP side under workflow settings -> External tasks, pointing at the Opal-exposed URL for this agent."
   },
   "tools": [
     {
@@ -64,7 +84,7 @@
       {
         "step": 1,
         "action": "intake",
-        "description": "Collect the proposed experiment from the user: hypothesis, primary metric, guardrail metrics, variations, audience, baseline rate of the primary metric, daily traffic per variant, target MDE (relative), proposed duration in days, significance (default 0.05), power (default 0.8), risk/rollback plan, and learning agenda. If the user provides an FX experiment ID instead of a wall of text, call experiment-lookup to pull the configuration. Ask once for anything missing; do not invent values."
+        "description": "Inputs arrive from the CMP webhook trigger via payload_mapping (hypothesis, variations, primary_metric, guardrail_metrics, audience, baseline_rate, mde_relative, proposed_duration_days, daily_traffic_per_variant, cmp_task_id). Any field that is missing or empty in the CMP task should be flagged in the review output as a gap; do NOT invent values, and lower the relevant axis score accordingly. If invoked manually (no webhook payload), prompt the user once for the missing inputs."
       },
       {
         "step": 2,
@@ -90,7 +110,7 @@
         "parameters": {
           "channel": "#experimentation-reviews",
           "priority": "medium",
-          "message": "Generated from review results - include experiment name, verdict, weighted_total/5, list of blockers, and top 2-3 suggestions. Keep under 8 lines."
+          "message": "Generated from review results - include CMP task ID and link, experiment name, verdict, weighted_total/5, list of blockers, and top 2-3 suggestions. Keep under 8 lines."
         },
         "description": "Post the verdict to Slack. Use priority 'high' if verdict is needs_revision, 'medium' otherwise."
       },
