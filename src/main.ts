@@ -46,6 +46,7 @@ import "./tools/flag-naming-validator";
 import "./tools/greeting";
 import "./tools/insight-generator";
 import "./tools/metric-variance-analyzer";
+import "./tools/odp";
 import "./tools/rick-roll";
 import "./tools/slack-notifier";
 import "./tools/srm-detector";
